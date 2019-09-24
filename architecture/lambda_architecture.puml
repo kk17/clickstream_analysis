@@ -1,0 +1,42 @@
+@startuml
+
+skinparam componentStyle uml2
+
+together {
+
+    package "Speed Layer" as spl {
+        [Kafka] as kf
+        [Spark Streaming] as ss
+        kf -right-> ss
+    }
+    clickstream -right-> kf
+}
+
+
+package "Batch Layer" as batl {
+    [AWS S3] as s3
+    [Spark] as sp
+    [Airflow] as af
+    s3 -right-> sp
+    af -up-> sp
+}
+
+ss -down-> s3
+
+package "Serving Layer" as servl {
+    [Canssandra] as ca
+    [Tableau] as tb
+    [Spring Boot] as spb
+    ca -down-> tb
+    ca -down-> spb
+}
+
+
+ss -right-> ca
+sp -right-> ca
+
+interface Query as q
+
+tb -right-> q
+spb -right-> q
+@enduml
